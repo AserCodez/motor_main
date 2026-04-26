@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-class PumpPowerButtonAtom extends StatelessWidget {
-  const PumpPowerButtonAtom({
+class PumpPowerButtonWidget extends StatelessWidget {
+  const PumpPowerButtonWidget({
     super.key,
     required this.isOn,
     required this.isBusy,

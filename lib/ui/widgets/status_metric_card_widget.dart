@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-class StatusMetricCardMolecule extends StatelessWidget {
-  const StatusMetricCardMolecule({
+class StatusMetricCardWidget extends StatelessWidget {
+  const StatusMetricCardWidget({
     super.key,
     required this.title,
     required this.value,

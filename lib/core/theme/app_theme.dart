@@ -6,7 +6,8 @@ class AppTheme {
 
   static ThemeData light() {
     final colorScheme = ColorScheme.fromSeed(
-      seedColor: Colors.cyan,
+      seedColor: Color.fromARGB(255, 1, 69, 105),
+      primary: Color.fromARGB(255, 1, 69, 105),
       brightness: Brightness.light,
     );
 

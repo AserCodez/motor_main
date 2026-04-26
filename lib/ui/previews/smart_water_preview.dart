@@ -2,42 +2,46 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widget_previews.dart';
 import 'package:motor_main/core/theme/app_theme.dart';
 import 'package:motor_main/features/water_storage/data/models/water_storage_response_model.dart';
-import 'package:motor_main/ui/atoms/pump_power_button_atom.dart';
-import 'package:motor_main/ui/atoms/water_level_gauge_atom.dart';
-import 'package:motor_main/ui/molecules/analytics_card_molecule.dart';
+import 'package:motor_main/ui/widgets/analytics_card_widget.dart';
+import 'package:motor_main/ui/widgets/pump_power_button_widget.dart';
+import 'package:motor_main/ui/widgets/water_level_gauge_widget.dart';
 
-@Preview(name: 'Water Gauge', group: 'Atoms')
+@Preview(name: 'Water Gauge', group: 'Widgets')
 Widget waterGaugePreview() {
   return MaterialApp(
     theme: AppTheme.light(),
     home: const Scaffold(
       body: Center(
-        child: WaterLevelGaugeAtom(currentLiters: 742, capacityLiters: 1000),
+        child: WaterLevelGaugeWidget(currentLiters: 742, capacityLiters: 1000),
       ),
     ),
   );
 }
 
-@Preview(name: 'Pump Toggle ON', group: 'Atoms')
+@Preview(name: 'Pump Toggle ON', group: 'Widgets')
 Widget pumpToggleOnPreview() {
   return MaterialApp(
     theme: AppTheme.light(),
     home: Scaffold(
       body: Center(
-        child: PumpPowerButtonAtom(isOn: true, isBusy: false, onToggle: () {}),
+        child: PumpPowerButtonWidget(
+          isOn: true,
+          isBusy: false,
+          onToggle: () {},
+        ),
       ),
     ),
   );
 }
 
-@Preview(name: 'Analytics Card', group: 'Molecules', size: Size(900, 600))
+@Preview(name: 'Analytics Card', group: 'Widgets', size: Size(900, 600))
 Widget analyticsCardPreview() {
   return MaterialApp(
     theme: AppTheme.light(),
     home: Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(20),
-        child: AnalyticsCardMolecule(history: _sampleHistory),
+        child: AnalyticsCardWidget(history: _sampleHistory),
       ),
     ),
   );

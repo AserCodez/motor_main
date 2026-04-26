@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-class ShimmerBlockAtom extends StatelessWidget {
-  const ShimmerBlockAtom({
+class ShimmerBlockWidget extends StatelessWidget {
+  const ShimmerBlockWidget({
     super.key,
     this.width = double.infinity,
     required this.height,

@@ -15,7 +15,7 @@ import 'package:motor_main/features/water_storage/data/models/water_storage_requ
 import 'package:motor_main/features/water_storage/data/repositories/water_storage_repository_impl.dart';
 import 'package:motor_main/features/water_storage/domain/usecases/calculate_fill_time_usecase.dart';
 import 'package:motor_main/features/water_storage/presentation/cubit/water_storage_cubit.dart';
-import 'package:motor_main/ui/organisms/smart_water_dashboard_organism.dart';
+import 'package:motor_main/ui/pages/smart_water_dashboard_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -98,7 +98,7 @@ class _MotorMainAppState extends State<MotorMainApp> {
         debugShowCheckedModeBanner: false,
         title: 'Smart Water Storage & Pump',
         theme: AppTheme.light(),
-        home: const SmartWaterDashboardOrganism(),
+        home: const SmartWaterDashboardPage(),
       ),
     );
   }

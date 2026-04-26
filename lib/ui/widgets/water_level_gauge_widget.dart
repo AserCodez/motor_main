@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-class WaterLevelGaugeAtom extends StatelessWidget {
-  const WaterLevelGaugeAtom({
+class WaterLevelGaugeWidget extends StatelessWidget {
+  const WaterLevelGaugeWidget({
     super.key,
     required this.currentLiters,
     required this.capacityLiters,
