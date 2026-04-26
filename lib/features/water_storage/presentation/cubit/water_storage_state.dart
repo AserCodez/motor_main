@@ -1,10 +1,21 @@
-part of 'water_storage_cubit.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:motor_main/features/water_storage/data/models/water_storage_response_model.dart';
 
-abstract class WaterStorageState extends Equatable {
-  const WaterStorageState();
+part 'water_storage_state.freezed.dart';
 
-  @override
-  List<Object> get props => [];
+@freezed
+class WaterStorageState with _$WaterStorageState {
+  const factory WaterStorageState.initial() = _Initial;
+
+  const factory WaterStorageState.loading() = _Loading;
+
+  const factory WaterStorageState.loaded({
+    required WaterStorageResponseModel storage,
+    required double fillTimeMinutes,
+  }) = _Loaded;
+
+  const factory WaterStorageState.error({
+    required String message,
+    WaterStorageResponseModel? lastKnownStorage,
+  }) = _Error;
 }
-
-class WaterStorageInitial extends WaterStorageState {}

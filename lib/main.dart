@@ -1,53 +1,104 @@
-import 'package:flutter/material.dart';
-import 'package:motor_main/widgets/liquid_circular_progress.dart';
-import 'package:motor_main/widgets/status_card.dart';
+import 'dart:async';
 
-void main() {
-  runApp(const MyApp());
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:motor_main/core/theme/app_theme.dart';
+import 'package:motor_main/features/water_pump/data/datasources/water_pump_remote_datasource.dart';
+import 'package:motor_main/features/water_pump/data/repositories/water_pump_repository_impl.dart';
+import 'package:motor_main/features/water_pump/presentation/cubit/water_pump_cubit.dart';
+import 'package:motor_main/features/water_storage/data/datasources/water_storage_remote_datasource.dart';
+import 'package:motor_main/features/water_storage/data/models/water_storage_request_model.dart';
+import 'package:motor_main/features/water_storage/data/repositories/water_storage_repository_impl.dart';
+import 'package:motor_main/features/water_storage/domain/usecases/calculate_fill_time_usecase.dart';
+import 'package:motor_main/features/water_storage/presentation/cubit/water_storage_cubit.dart';
+import 'package:motor_main/ui/organisms/smart_water_dashboard_organism.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  FirebaseDatabase? firebaseDatabase;
+  try {
+    final app = await Firebase.initializeApp();
+    firebaseDatabase = FirebaseDatabase.instanceFor(app: app);
+  } catch (error) {
+    debugPrint('Firebase initialization skipped: $error');
+  }
+
+  runApp(MotorMainApp(firebaseDatabase: firebaseDatabase));
+
+  if (kIsWeb) {
+    SemanticsBinding.instance.ensureSemantics();
+  }
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MotorMainApp extends StatefulWidget {
+  const MotorMainApp({super.key, required this.firebaseDatabase});
 
-  // This widget is the root of your application.
+  final FirebaseDatabase? firebaseDatabase;
+
+  @override
+  State<MotorMainApp> createState() => _MotorMainAppState();
+}
+
+class _MotorMainAppState extends State<MotorMainApp> {
+  late final WaterStorageCubit _waterStorageCubit;
+  late final WaterPumpCubit _waterPumpCubit;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final waterStorageRepository = WaterStorageRepositoryImpl(
+      remoteDatasource: WaterStorageRemoteDatasource(
+        database: widget.firebaseDatabase,
+      ),
+    );
+
+    _waterStorageCubit = WaterStorageCubit(
+      repository: waterStorageRepository,
+      requestModel: const WaterStorageRequestModel(
+        tankId: 'main_tank',
+        capacityLiters: 1000,
+        flowRateLitersPerMinute: 15,
+      ),
+      calculateFillTimeUseCase: const CalculateFillTimeUseCase(),
+    )..startMonitoring();
+
+    final waterPumpRepository = WaterPumpRepositoryImpl(
+      remoteDatasource: WaterPumpRemoteDatasource(
+        database: widget.firebaseDatabase,
+      ),
+    );
+
+    _waterPumpCubit = WaterPumpCubit(
+      repository: waterPumpRepository,
+      waterStorageCubit: _waterStorageCubit,
+    )..startMonitoring();
+  }
+
+  @override
+  void dispose() {
+    unawaited(_waterPumpCubit.close());
+    unawaited(_waterStorageCubit.close());
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: MaterialApp(
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<WaterStorageCubit>.value(value: _waterStorageCubit),
+        BlocProvider<WaterPumpCubit>.value(value: _waterPumpCubit),
+      ],
+      child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: Scaffold(
-          appBar: AppBar(title: const Text('Liquid Circular Progress')),
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Center(
-                child: LiquidCircularProgress(
-                  currentLiters: 950,
-                  capacity: 1000,
-                ),
-              ),
-              const SizedBox(height: 32),
-              StatusCard(
-                title: "PUMP",
-                subtitle: "STATUS",
-                status: "NO WATER FLOW",
-                icon: Icons.waves,
-              ),
-              const SizedBox(height: 32),
-              StatusCard(
-                title: "TANK",
-                subtitle: "LEVEL",
-                status: "LOW",
-                icon: Icons.opacity,
-              ),
-            ],
-          ),
-        ),
+        title: 'Smart Water Storage & Pump',
+        theme: AppTheme.light(),
+        home: const SmartWaterDashboardOrganism(),
       ),
     );
   }
