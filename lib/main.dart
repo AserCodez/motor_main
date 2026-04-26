@@ -7,13 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:motor_main/core/theme/app_theme.dart';
+import 'package:motor_main/features/navigation/presentation/pages/main_tab_screen.dart';
 import 'package:motor_main/features/water_pump/data/datasources/water_pump_remote_datasource.dart';
 import 'package:motor_main/features/water_pump/data/repositories/water_pump_repository_impl.dart';
 import 'package:motor_main/features/water_pump/presentation/cubit/water_pump_cubit.dart';
 import 'package:motor_main/features/water_storage/data/datasources/water_storage_remote_datasource.dart';
 import 'package:motor_main/features/water_storage/data/models/water_storage_request_model.dart';
 import 'package:motor_main/features/water_storage/data/repositories/water_storage_repository_impl.dart';
-import 'package:motor_main/features/water_storage/presentation/pages/smart_water_dashboard_page.dart';
 import 'package:motor_main/features/water_storage/domain/usecases/calculate_fill_time_usecase.dart';
 import 'package:motor_main/features/water_storage/presentation/cubit/water_storage_cubit.dart';
 
@@ -98,7 +98,7 @@ class _MotorMainAppState extends State<MotorMainApp> {
         debugShowCheckedModeBanner: false,
         title: 'Smart Water Storage & Pump',
         theme: AppTheme.light(),
-        home: const SmartWaterDashboardPage(),
+        home: const MainTabScreen(),
       ),
     );
   }

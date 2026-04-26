@@ -150,6 +150,30 @@ class WaterHistoryChartWidget extends StatelessWidget {
                               ),
                             ),
                           ],
+                          lineTouchData: LineTouchData(
+                            enabled: true,
+                            handleBuiltInTouches: true,
+                            touchTooltipData: LineTouchTooltipData(
+                              fitInsideHorizontally: true,
+                              fitInsideVertically: true,
+                              getTooltipItems: (touchedSpots) {
+                                return touchedSpots.map((spot) {
+                                  final levelValue = spot.y.round();
+                                  return LineTooltipItem(
+                                    '$levelValue%',
+                                    textTheme.titleSmall?.copyWith(
+                                          color: colorScheme.onPrimary,
+                                          fontWeight: FontWeight.w700,
+                                        ) ??
+                                        TextStyle(
+                                          color: colorScheme.onPrimary,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                  );
+                                }).toList();
+                              },
+                            ),
+                          ),
                         ),
                       ),
               ),
