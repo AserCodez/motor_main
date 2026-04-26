@@ -4,8 +4,8 @@ import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:motor_main/features/water_storage/data/models/water_storage_response_model.dart';
 
-class AnalyticsCardWidget extends StatelessWidget {
-  const AnalyticsCardWidget({super.key, required this.history});
+class WaterHistoryChartWidget extends StatelessWidget {
+  const WaterHistoryChartWidget({super.key, required this.history});
 
   final List<DailyWaterLevelPoint> history;
 

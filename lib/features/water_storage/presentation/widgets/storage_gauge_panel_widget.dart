@@ -3,13 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:motor_main/features/water_pump/data/models/water_pump_response_model.dart';
 import 'package:motor_main/features/water_pump/presentation/cubit/water_pump_cubit.dart';
+import 'package:motor_main/features/water_pump/presentation/widgets/pump_power_button_widget.dart';
 import 'package:motor_main/features/water_storage/data/models/water_storage_response_model.dart';
-import 'package:motor_main/ui/widgets/fill_time_formatter.dart';
-import 'package:motor_main/ui/widgets/pump_power_button_widget.dart';
-import 'package:motor_main/ui/widgets/water_level_gauge_widget.dart';
+import 'package:motor_main/features/water_storage/presentation/widgets/fill_time_formatter.dart';
+import 'package:motor_main/features/water_storage/presentation/widgets/water_level_gauge_widget.dart';
 
-class GaugePanelWidget extends StatelessWidget {
-  const GaugePanelWidget({
+class StorageGaugePanelWidget extends StatelessWidget {
+  const StorageGaugePanelWidget({
     super.key,
     required this.storage,
     required this.fillTimeMinutes,

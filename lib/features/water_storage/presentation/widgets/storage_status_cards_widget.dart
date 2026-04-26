@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:motor_main/features/water_pump/data/models/water_pump_response_model.dart';
 import 'package:motor_main/features/water_storage/data/models/water_storage_response_model.dart';
-import 'package:motor_main/ui/widgets/fill_time_formatter.dart';
-import 'package:motor_main/ui/widgets/status_metric_card_widget.dart';
+import 'package:motor_main/features/water_storage/presentation/widgets/fill_time_formatter.dart';
+import 'package:motor_main/features/water_storage/presentation/widgets/status_metric_card_widget.dart';
 
-class StatusCardsWidget extends StatelessWidget {
-  const StatusCardsWidget({
+class StorageStatusCardsWidget extends StatelessWidget {
+  const StorageStatusCardsWidget({
     super.key,
     required this.storage,
     required this.pump,

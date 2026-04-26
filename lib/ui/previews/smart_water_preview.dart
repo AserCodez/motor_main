@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widget_previews.dart';
 import 'package:motor_main/core/theme/app_theme.dart';
+import 'package:motor_main/features/water_pump/presentation/widgets/pump_power_button_widget.dart';
 import 'package:motor_main/features/water_storage/data/models/water_storage_response_model.dart';
-import 'package:motor_main/ui/widgets/analytics_card_widget.dart';
-import 'package:motor_main/ui/widgets/pump_power_button_widget.dart';
-import 'package:motor_main/ui/widgets/water_level_gauge_widget.dart';
+import 'package:motor_main/features/water_storage/presentation/widgets/water_history_chart_widget.dart';
+import 'package:motor_main/features/water_storage/presentation/widgets/water_level_gauge_widget.dart';
 
 @Preview(name: 'Water Gauge', group: 'Widgets')
 Widget waterGaugePreview() {
@@ -41,7 +41,7 @@ Widget analyticsCardPreview() {
     home: Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(20),
-        child: AnalyticsCardWidget(history: _sampleHistory),
+        child: WaterHistoryChartWidget(history: _sampleHistory),
       ),
     ),
   );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class DashboardErrorWidget extends StatelessWidget {
-  const DashboardErrorWidget({
+class WaterStorageErrorWidget extends StatelessWidget {
+  const WaterStorageErrorWidget({
     super.key,
     required this.message,
     required this.onRetry,

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:motor_main/ui/widgets/shimmer_block_widget.dart';
+import 'package:motor_main/features/water_storage/presentation/widgets/shimmer_block_widget.dart';
 
-class DashboardLoadingWidget extends StatelessWidget {
-  const DashboardLoadingWidget({super.key});
+class WaterStorageLoadingWidget extends StatelessWidget {
+  const WaterStorageLoadingWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

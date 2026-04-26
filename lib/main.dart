@@ -13,9 +13,9 @@ import 'package:motor_main/features/water_pump/presentation/cubit/water_pump_cub
 import 'package:motor_main/features/water_storage/data/datasources/water_storage_remote_datasource.dart';
 import 'package:motor_main/features/water_storage/data/models/water_storage_request_model.dart';
 import 'package:motor_main/features/water_storage/data/repositories/water_storage_repository_impl.dart';
+import 'package:motor_main/features/water_storage/presentation/pages/smart_water_dashboard_page.dart';
 import 'package:motor_main/features/water_storage/domain/usecases/calculate_fill_time_usecase.dart';
 import 'package:motor_main/features/water_storage/presentation/cubit/water_storage_cubit.dart';
-import 'package:motor_main/ui/pages/smart_water_dashboard_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

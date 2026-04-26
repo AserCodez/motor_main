@@ -5,13 +5,13 @@ import 'package:motor_main/features/water_pump/data/models/water_pump_response_m
 import 'package:motor_main/features/water_pump/presentation/cubit/water_pump_cubit.dart';
 import 'package:motor_main/features/water_pump/presentation/cubit/water_pump_state.dart';
 import 'package:motor_main/features/water_storage/data/models/water_storage_response_model.dart';
-import 'package:motor_main/ui/widgets/analytics_card_widget.dart';
-import 'package:motor_main/ui/widgets/gauge_panel_widget.dart';
-import 'package:motor_main/ui/widgets/status_cards_widget.dart';
-import 'package:motor_main/ui/widgets/warning_banner_widget.dart';
+import 'package:motor_main/features/water_storage/presentation/widgets/storage_gauge_panel_widget.dart';
+import 'package:motor_main/features/water_storage/presentation/widgets/storage_status_cards_widget.dart';
+import 'package:motor_main/features/water_storage/presentation/widgets/warning_banner_widget.dart';
+import 'package:motor_main/features/water_storage/presentation/widgets/water_history_chart_widget.dart';
 
-class DashboardContentWidget extends StatelessWidget {
-  const DashboardContentWidget({
+class WaterStorageDashboardContentWidget extends StatelessWidget {
+  const WaterStorageDashboardContentWidget({
     super.key,
     required this.storage,
     required this.fillTimeMinutes,
@@ -42,7 +42,7 @@ class DashboardContentWidget extends StatelessWidget {
           builder: (context, constraints) {
             final isLargeScreen = constraints.maxWidth >= 900;
 
-            final gaugePanel = GaugePanelWidget(
+            final gaugePanel = StorageGaugePanelWidget(
               storage: storage,
               fillTimeMinutes: fillTimeMinutes,
               pump: pump,
@@ -52,14 +52,14 @@ class DashboardContentWidget extends StatelessWidget {
             final detailsPanel = Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                StatusCardsWidget(
+                StorageStatusCardsWidget(
                   storage: storage,
                   pump: pump,
                   fillTimeMinutes: fillTimeMinutes,
                   isLargeScreen: isLargeScreen,
                 ),
                 const Gap(16),
-                AnalyticsCardWidget(history: storage.history),
+                WaterHistoryChartWidget(history: storage.history),
               ],
             );
 
