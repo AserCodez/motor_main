@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:firebase_database/firebase_database.dart';
 import 'package:motor_main/core/constants/firebase_paths.dart';
 import 'package:motor_main/features/water_pump/data/models/water_pump_request_model.dart';
@@ -11,18 +9,36 @@ class WaterPumpRemoteDatasource {
 
   final FirebaseDatabase? _database;
   bool _mockPumpOn = false;
+  double _mockFlow = 0;
 
-  DatabaseReference? get _pumpReference => _database?.ref(FirebasePaths.pump);
+  DatabaseReference? get _pumpReference =>
+      _database?.ref(FirebasePaths.waterPump);
+  DatabaseReference? get _logsReference => _database?.ref(FirebasePaths.logs);
 
-  Stream<WaterPumpResponseModel> watchPumpStatus() {
+  Future<WaterPumpResponseModel> fetchPumpStatus() async {
     final pumpReference = _pumpReference;
     if (pumpReference == null) {
-      return _buildMockPumpStatusStream();
+      return WaterPumpResponseModel(
+        isOn: _mockPumpOn,
+        flowLitersPerMinute: _mockFlow,
+        lastUpdated: DateTime.now(),
+        source: 'mock_snapshot',
+      );
     }
 
-    return pumpReference.onValue.map((event) {
-      final rawData = _decodeSnapshotData(event.snapshot.value);
-      return _buildPumpResponse(rawData: rawData);
+    final pumpSnapshot = await pumpReference.get();
+    final logsSnapshot = await _logsReference
+        ?.child(FirebasePaths.logsLastUpdated)
+        .get();
+
+    final pumpData = _decodeSnapshotData(pumpSnapshot.value);
+    return WaterPumpResponseModel.fromJson(<String, dynamic>{
+      FirebasePaths.waterPumpStatus:
+          pumpData[FirebasePaths.waterPumpStatus] ?? false,
+      FirebasePaths.waterPumpFlow: pumpData[FirebasePaths.waterPumpFlow] ?? 0,
+      FirebasePaths.logsLastUpdated:
+          logsSnapshot?.value ?? pumpData[FirebasePaths.logsLastUpdated],
+      'source': pumpData['source'] ?? 'firebase',
     });
   }
 
@@ -32,50 +48,34 @@ class WaterPumpRemoteDatasource {
     final pumpReference = _pumpReference;
     if (pumpReference == null) {
       _mockPumpOn = request.desiredOn;
+      if (request.flowLitersPerMinute != null) {
+        _mockFlow = request.flowLitersPerMinute!;
+      }
+
       return WaterPumpResponseModel(
         isOn: _mockPumpOn,
-        lastUpdated: DateTime.now(),
+        flowLitersPerMinute: _mockFlow,
+        lastUpdated: request.issuedAt,
         source: 'mock_${request.commandSource}',
       );
     }
 
-    await pumpReference.update({
-      'is_on': request.desiredOn,
-      'last_updated': request.issuedAt.toIso8601String(),
+    final pumpUpdates = <String, dynamic>{
+      FirebasePaths.waterPumpStatus: request.desiredOn,
       'source': request.commandSource,
-    });
-
-    final snapshot = await pumpReference.get();
-    final rawData = _decodeSnapshotData(snapshot.value);
-    return _buildPumpResponse(
-      rawData: rawData,
-      fallbackState: request.desiredOn,
-    );
-  }
-
-  Stream<WaterPumpResponseModel> _buildMockPumpStatusStream() async* {
-    while (true) {
-      yield WaterPumpResponseModel(
-        isOn: _mockPumpOn,
-        lastUpdated: DateTime.now(),
-        source: 'mock_stream',
-      );
-      await Future<void>.delayed(const Duration(seconds: 3));
-    }
-  }
-
-  WaterPumpResponseModel _buildPumpResponse({
-    required Map<String, dynamic> rawData,
-    bool fallbackState = false,
-  }) {
-    final payload = <String, dynamic>{
-      'is_on': rawData['is_on'] ?? fallbackState,
-      'last_updated':
-          rawData['last_updated'] ?? DateTime.now().toIso8601String(),
-      'source': rawData['source'] ?? 'remote',
     };
 
-    return WaterPumpResponseModel.fromJson(payload);
+    if (request.flowLitersPerMinute != null) {
+      pumpUpdates[FirebasePaths.waterPumpFlow] = request.flowLitersPerMinute;
+    }
+
+    await pumpReference.update(pumpUpdates);
+    await _logsReference?.update(<String, dynamic>{
+      FirebasePaths.logsLastUpdated: request.issuedAt.toIso8601String(),
+    });
+
+    final snapshot = await fetchPumpStatus();
+    return snapshot.copyWith(source: request.commandSource);
   }
 
   Map<String, dynamic> _decodeSnapshotData(Object? rawData) {

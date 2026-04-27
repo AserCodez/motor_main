@@ -11,13 +11,6 @@ class WaterStorageRepositoryImpl implements WaterStorageRepository {
   final WaterStorageRemoteDatasource _remoteDatasource;
 
   @override
-  Stream<WaterStorageResponseModel> watchStorage(
-    WaterStorageRequestModel request,
-  ) {
-    return _remoteDatasource.watchStorage(request);
-  }
-
-  @override
   Future<WaterStorageResponseModel> fetchStorageSnapshot(
     WaterStorageRequestModel request,
   ) {

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:motor_main/features/water_pump/data/models/water_pump_request_model.dart';
 import 'package:motor_main/features/water_pump/data/models/water_pump_response_model.dart';
@@ -19,23 +17,23 @@ class WaterPumpCubit extends Cubit<WaterPumpState> {
   final WaterPumpRepository _repository;
   final WaterStorageCubit _waterStorageCubit;
 
-  StreamSubscription<WaterPumpResponseModel>? _pumpSubscription;
-  StreamSubscription<WaterStorageState>? _storageSubscription;
-
   WaterPumpResponseModel _lastKnownPump = WaterPumpResponseModel.initial();
   bool _isMutationInFlight = false;
 
   Future<void> startMonitoring() async {
     emit(const WaterPumpState.loading());
-    await _pumpSubscription?.cancel();
-    await _storageSubscription?.cancel();
+    await refresh();
+    await _syncPumpWithStorageState();
+  }
 
-    _pumpSubscription = _repository.watchPumpStatus().listen(
-      _onPumpStatus,
-      onError: _onPumpError,
-    );
-
-    _storageSubscription = _waterStorageCubit.stream.listen(_onStorageState);
+  Future<void> refresh() async {
+    emit(const WaterPumpState.loading());
+    try {
+      final pumpStatus = await _repository.fetchPumpStatus();
+      _onPumpStatus(pumpStatus);
+    } catch (error, stackTrace) {
+      _onPumpError(error, stackTrace);
+    }
   }
 
   Future<void> togglePump({
@@ -100,26 +98,18 @@ class WaterPumpCubit extends Cubit<WaterPumpState> {
     );
   }
 
-  void _onStorageState(WaterStorageState storageState) {
-    storageState.whenOrNull(
-      loaded: (storage, _) {
-        final tankIsFull = storage.levelPercentage >= 100;
-        if (tankIsFull && _lastKnownPump.isOn && !_isMutationInFlight) {
-          unawaited(
-            togglePump(
-              forceStatus: false,
-              commandSource: 'auto_switch_full_tank',
-            ),
-          );
-        }
-      },
+  Future<void> _syncPumpWithStorageState() async {
+    final storageState = _waterStorageCubit.state;
+    final shouldAutoStop = storageState.maybeWhen(
+      loaded: (storage, _) => storage.levelPercentage >= 100,
+      orElse: () => false,
     );
-  }
 
-  @override
-  Future<void> close() async {
-    await _pumpSubscription?.cancel();
-    await _storageSubscription?.cancel();
-    return super.close();
+    if (shouldAutoStop && _lastKnownPump.isOn && !_isMutationInFlight) {
+      await togglePump(
+        forceStatus: false,
+        commandSource: 'auto_switch_full_tank',
+      );
+    }
   }
 }

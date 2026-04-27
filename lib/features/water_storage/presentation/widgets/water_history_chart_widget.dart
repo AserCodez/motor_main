@@ -36,7 +36,7 @@ class WaterHistoryChartWidget extends StatelessWidget {
               ),
               const Gap(4),
               Text(
-                'Level percentage trend from the telemetry stream',
+                'Level percentage trend from telemetry snapshots',
                 style: textTheme.bodyMedium?.copyWith(
                   color: colorScheme.onSurfaceVariant,
                 ),

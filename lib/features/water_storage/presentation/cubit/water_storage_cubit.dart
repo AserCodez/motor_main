@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:motor_main/features/water_storage/data/models/water_storage_request_model.dart';
 import 'package:motor_main/features/water_storage/data/models/water_storage_response_model.dart';
@@ -21,16 +19,10 @@ class WaterStorageCubit extends Cubit<WaterStorageState> {
   final WaterStorageRequestModel _requestModel;
   final CalculateFillTimeUseCase _calculateFillTimeUseCase;
 
-  StreamSubscription<WaterStorageResponseModel>? _storageSubscription;
   WaterStorageResponseModel? _lastKnownStorage;
 
   Future<void> startMonitoring() async {
-    emit(const WaterStorageState.loading());
-    await _storageSubscription?.cancel();
-
-    _storageSubscription = _repository
-        .watchStorage(_requestModel)
-        .listen(_onStorageSnapshot, onError: _onStorageError);
+    await refresh();
   }
 
   Future<void> refresh() async {
@@ -67,11 +59,5 @@ class WaterStorageCubit extends Cubit<WaterStorageState> {
         lastKnownStorage: _lastKnownStorage,
       ),
     );
-  }
-
-  @override
-  Future<void> close() async {
-    await _storageSubscription?.cancel();
-    return super.close();
   }
 }

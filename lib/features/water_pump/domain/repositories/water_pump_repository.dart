@@ -2,7 +2,7 @@ import 'package:motor_main/features/water_pump/data/models/water_pump_request_mo
 import 'package:motor_main/features/water_pump/data/models/water_pump_response_model.dart';
 
 abstract class WaterPumpRepository {
-  Stream<WaterPumpResponseModel> watchPumpStatus();
+  Future<WaterPumpResponseModel> fetchPumpStatus();
 
   Future<WaterPumpResponseModel> setPumpStatus(WaterPumpRequestModel request);
 }

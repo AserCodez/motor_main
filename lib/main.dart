@@ -16,19 +16,15 @@ import 'package:motor_main/features/water_storage/data/models/water_storage_requ
 import 'package:motor_main/features/water_storage/data/repositories/water_storage_repository_impl.dart';
 import 'package:motor_main/features/water_storage/domain/usecases/calculate_fill_time_usecase.dart';
 import 'package:motor_main/features/water_storage/presentation/cubit/water_storage_cubit.dart';
+import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  FirebaseDatabase? firebaseDatabase;
-  try {
-    final app = await Firebase.initializeApp();
-    firebaseDatabase = FirebaseDatabase.instanceFor(app: app);
-  } catch (error) {
-    debugPrint('Firebase initialization skipped: $error');
-  }
+  // Start Firebase
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  runApp(MotorMainApp(firebaseDatabase: firebaseDatabase));
+  runApp(MotorMainApp());
 
   if (kIsWeb) {
     SemanticsBinding.instance.ensureSemantics();
@@ -36,9 +32,7 @@ Future<void> main() async {
 }
 
 class MotorMainApp extends StatefulWidget {
-  const MotorMainApp({super.key, required this.firebaseDatabase});
-
-  final FirebaseDatabase? firebaseDatabase;
+  const MotorMainApp({super.key});
 
   @override
   State<MotorMainApp> createState() => _MotorMainAppState();
@@ -52,9 +46,14 @@ class _MotorMainAppState extends State<MotorMainApp> {
   void initState() {
     super.initState();
 
+    final realtimeDatabase = FirebaseDatabase.instanceFor(
+      app: Firebase.app(),
+      databaseURL: DefaultFirebaseOptions.currentPlatform.databaseURL,
+    );
+
     final waterStorageRepository = WaterStorageRepositoryImpl(
       remoteDatasource: WaterStorageRemoteDatasource(
-        database: widget.firebaseDatabase,
+        database: realtimeDatabase,
       ),
     );
 
@@ -69,9 +68,7 @@ class _MotorMainAppState extends State<MotorMainApp> {
     )..startMonitoring();
 
     final waterPumpRepository = WaterPumpRepositoryImpl(
-      remoteDatasource: WaterPumpRemoteDatasource(
-        database: widget.firebaseDatabase,
-      ),
+      remoteDatasource: WaterPumpRemoteDatasource(database: realtimeDatabase),
     );
 
     _waterPumpCubit = WaterPumpCubit(

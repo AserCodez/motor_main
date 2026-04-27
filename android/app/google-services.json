@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "306424694595",
+    "firebase_url": "https://motorlio-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "motorlio",
+    "storage_bucket": "motorlio.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:306424694595:android:355f77045f827708c011f6",
+        "android_client_info": {
+          "package_name": "com.example.motor_main"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIQV0I3R5mz2MANc1SAsc0BG1tqo9wdGM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

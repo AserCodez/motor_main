@@ -10,8 +10,8 @@ class WaterPumpRepositoryImpl implements WaterPumpRepository {
   final WaterPumpRemoteDatasource _remoteDatasource;
 
   @override
-  Stream<WaterPumpResponseModel> watchPumpStatus() {
-    return _remoteDatasource.watchPumpStatus();
+  Future<WaterPumpResponseModel> fetchPumpStatus() {
+    return _remoteDatasource.fetchPumpStatus();
   }
 
   @override
